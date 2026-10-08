@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Guessing Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-card {
+            background: #2d2d44;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            width: 350px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4f46e5;
+        }
+        p {
+            color: #a0aec0;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #4a5568;
+            border-radius: 6px;
+            background: #1a202c;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #4338ca;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-card">
+        <h1>Number Guessing Game</h1>
+        <p>Guess a number between 1 and 100.<br>You have 7 chances!</p>
+        
+        <input type="number" id="userGuess" min="1" max="100" placeholder="Enter number">
+        <br>
+        <button id="submitBtn" onclick="checkGuess()">Submit Guess</button>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Game logic matching your Python rules
+        let secretNum = Math.floor(Math.random() * 100) + 1;
+        let attemptsLeft = 7;
+        let gameOver = false;
+
+        function checkGuess() {
+            if (gameOver) return;
+
+            const inputField = document.getElementById("userGuess");
+            const messageDiv = document.getElementById("message");
+            const userVal = parseInt(inputField.value);
+
+            // Validation (1 to 100)
+            if (isNaN(userVal) || userVal < 1 || userVal > 100) {
+                messageDiv.style.color = "#f6ad55";
+                messageDiv.innerText = "Invalid input. Please enter the number between 1 to 100";
+                return;
+            }
+
+            attemptsLeft--;
+
+            if (userVal > secretNum) {
+                messageDiv.style.color = "#fc8181";
+                messageDiv.innerText = `Your number is Greaterr!! (Chances left: ${attemptsLeft})`;
+            } else if (userVal < secretNum) {
+                messageDiv.style.color = "#fc8181";
+                messageDiv.innerText = `Your number is Lesser!! (Chances left: ${attemptsLeft})`;
+            } else {
+                messageDiv.style.color = "#68d391";
+                messageDiv.innerText = `Congratulation you found the number (${secretNum}) within ${7 - attemptsLeft} attempts!`;
+                endGame();
+                return;
+            }
+
+            // Check if chances ran out
+            if (attemptsLeft <= 0 && userVal !== secretNum) {
+                messageDiv.style.color = "#f56565";
+                messageDiv.innerText = `Sorry! You exceeded your chances. The correct number is ${secretNum}.`;
+                endGame();
+            }
+
+            inputField.value = "";
+            inputField.focus();
+        }
+
+        function endGame() {
+            gameOver = true;
+            document.getElementById("submitBtn").innerText = "Play Again";
+            document.getElementById("submitBtn").setAttribute("onclick", "restartGame()");
+        }
+
+        function restartGame() {
+            secretNum = Math.floor(Math.random() * 100) + 1;
+            attemptsLeft = 7;
+            gameOver = false;
+            document.getElementById("message").innerText = "";
+            document.getElementById("userGuess").value = "";
+            document.getElementById("submitBtn").innerText = "Submit Guess";
+            document.getElementById("submitBtn").setAttribute("onclick", "checkGuess()");
+        }
+    </script>
+</body>
+</html>
